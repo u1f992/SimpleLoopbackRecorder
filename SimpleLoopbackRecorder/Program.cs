@@ -8,7 +8,7 @@ namespace SimpleLoopbackRecorder
 {
     public class Program
     {
-        private const string SLR_VERSION = "0.1";
+        private const string SLR_VERSION = "0.2";
         private const string SLR_USEAGE = "Usage:\n\tslr {-o | --output} <filename> [Options]\nOptions:\n\t-o, --output\tspecify output\n\t-v, --version\tprint version\n\t-h, --help\tprint help";
 
         static void Main(string[] args)
@@ -32,7 +32,7 @@ namespace SimpleLoopbackRecorder
             var capture = new WasapiLoopbackCapture();
             var writer = new WaveFileWriter(outputFilePath, capture.WaveFormat);
 
-            // 何も再生していない時間も録音するため
+            // 何も再生していない時間も録音する
             var silence = new WaveOutEvent();
             silence.Init(new SilenceProvider(capture.WaveFormat).ToSampleProvider());
             silence.Play();
@@ -42,10 +42,6 @@ namespace SimpleLoopbackRecorder
             capture.DataAvailable += (s, a) =>
             {
                 writer.Write(a.Buffer, 0, a.BytesRecorded);
-                if (writer.Position > capture.WaveFormat.AverageBytesPerSecond * 5)
-                {
-                    capture.StopRecording();
-                }
             };
             capture.RecordingStopped += (s, a) =>
             {
@@ -58,15 +54,17 @@ namespace SimpleLoopbackRecorder
             capture.StartRecording();
             while (capture.CaptureState != NAudio.CoreAudioApi.CaptureState.Stopped)
             {
-                Thread.Sleep(1);
+                Console.Write("\r{0:hh\\:mm\\:ss\\.fff}", stopwatch.Elapsed);
 
-                Console.Write("\r\t{0}", stopwatch.Elapsed);
-                
+                // キー入力で録音終了
+                if (Console.KeyAvailable) capture.StopRecording();
             }
             stopwatch.Stop();
             silence.Stop();
 
-            Console.WriteLine("\r\t{0}\n\"{1}\" has been saved.", stopwatch.Elapsed, outputFilePath);
+            // キー入力を破棄
+            Console.ReadKey(true);
+            Console.WriteLine("\r{0:hh\\:mm\\:ss\\.fff}\n\"{1}\" has been saved.", stopwatch.Elapsed, outputFilePath);
         }
 
         /// <summary>
