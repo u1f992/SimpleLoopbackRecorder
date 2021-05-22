@@ -33,13 +33,11 @@ namespace SimpleLoopbackRecorder
             var writer = new WaveFileWriter(outputFilePath, capture.WaveFormat);
 
             // 何も再生していない時間も録音するため
-            var silence = new SilenceProvider(capture.WaveFormat).ToSampleProvider();
-            var waveout = new WaveOutEvent();
-            waveout.Init(silence);
-            waveout.Play();
+            var silence = new WaveOutEvent();
+            silence.Init(new SilenceProvider(capture.WaveFormat).ToSampleProvider());
+            silence.Play();
 
             var stopwatch = new Stopwatch();
-            int hand = 0;
 
             capture.DataAvailable += (s, a) =>
             {
@@ -49,7 +47,6 @@ namespace SimpleLoopbackRecorder
                     capture.StopRecording();
                 }
             };
-
             capture.RecordingStopped += (s, a) =>
             {
                 writer.Dispose();
@@ -61,20 +58,15 @@ namespace SimpleLoopbackRecorder
             capture.StartRecording();
             while (capture.CaptureState != NAudio.CoreAudioApi.CaptureState.Stopped)
             {
-                Thread.Sleep(50);
+                Thread.Sleep(1);
 
-                Console.Write("\r{0} {1}", "-\\|/".Substring(hand, 1), stopwatch.Elapsed);
-                if ((hand + 1) % 4 == 0)
-                {
-                    hand = -1;
-                }
-                hand++;
+                Console.Write("\r\t{0}", stopwatch.Elapsed);
                 
             }
             stopwatch.Stop();
-            waveout.Stop();
+            silence.Stop();
 
-            Console.WriteLine("\r  {0}\n\"{1}\" has been saved.", stopwatch.Elapsed, outputFilePath);
+            Console.WriteLine("\r\t{0}\n\"{1}\" has been saved.", stopwatch.Elapsed, outputFilePath);
         }
 
         /// <summary>
@@ -118,7 +110,7 @@ namespace SimpleLoopbackRecorder
 
             if (ret == "")
             {
-                Console.Error.WriteLine("Invalid filename.");
+                Console.Error.WriteLine("Error: Invalid designation.");
                 return false;
             }
 
@@ -132,9 +124,7 @@ namespace SimpleLoopbackRecorder
         /// </a>
         /// </summary>
         /// <param name="path">検証するパス</param>
-        /// <returns>
-        /// pathは絶対パスに変換される
-        /// </returns>
+        /// <returns></returns>
         private static bool ValidatePath(ref string path)
         {
             string CurDir = Environment.CurrentDirectory;
@@ -149,6 +139,8 @@ namespace SimpleLoopbackRecorder
                     {
                         path = Path.Combine(CurDir, path);
                     }
+                    var stream = File.Create(path);
+                    stream.Close();
 
                     // Exceptions from FileInfo Constructor:
                     //   System.ArgumentNullException:
@@ -227,7 +219,6 @@ namespace SimpleLoopbackRecorder
                     // System.FileNotFoundException
                     //  The exception that is thrown when an attempt to access a file that does not
                     //  exist on disk fails.
-                    return true;
                 }
                 catch (IOException)
                 {
