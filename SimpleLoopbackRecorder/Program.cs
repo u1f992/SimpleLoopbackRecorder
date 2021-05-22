@@ -95,7 +95,7 @@ namespace SimpleLoopbackRecorder
                     // 出力ファイルを指定
                     i++;
                     ret = args[i];
-                    if (!ValidatePath(ref ret) || tmp.Substring(0, 1) == "-")
+                    if (!ValidatePath(ref ret) || args[i].Substring(0, 1) == "-")
                     {
                         Console.Error.WriteLine("Error: Invalid filename.");
                         ret = "";
@@ -118,10 +118,12 @@ namespace SimpleLoopbackRecorder
                     flag_device = true;
                 }
                 else if (((tmp == "-o" || tmp == "--output" || tmp == "-d" || tmp == "--device") && i == args.Length - 1) ||
-                            (ret == "" && args.Length > 2 && i == args.Length - 1))
+                            (ret == "" && args.Length > 2 && i == args.Length - 1) ||
+                                (!(tmp == "-l" || tmp == "--list" || tmp == "-v" || tmp == "--version" || tmp == "-h" || tmp == "--help") && args.Length == 1))
                 {
                     // 直後に値が必要な引数が最後にある
                     // 2つ以上の引数がある場合に、最後の引数なのにoutputが指定されていない
+                    // -l, -v, -h以外の引数が単独で渡されている
                     Console.Error.WriteLine("Error: Invalid arguments.");
                     ret = "";
                     return false;
