@@ -8,7 +8,7 @@ namespace SimpleLoopbackRecorder.Test
         [Fact]
         public void Test1()
         {
-
+            
         }
     }
 }
