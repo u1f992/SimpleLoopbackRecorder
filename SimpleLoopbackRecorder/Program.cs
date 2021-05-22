@@ -31,6 +31,8 @@ namespace SimpleLoopbackRecorder
 
             var capture = new WasapiLoopbackCapture();
             var writer = new WaveFileWriter(outputFilePath, capture.WaveFormat);
+            var stopwatch = new Stopwatch();
+            int hand = 0;
 
             capture.DataAvailable += (s, a) =>
             {
@@ -48,14 +50,33 @@ namespace SimpleLoopbackRecorder
                 capture.Dispose();
             };
 
+            stopwatch.Start();
             capture.StartRecording();
             while (capture.CaptureState != NAudio.CoreAudioApi.CaptureState.Stopped)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(50);
+
+                Console.Write("\r{0} {1}", "-\\|/".Substring(hand, 1), stopwatch.Elapsed);
+                if ((hand + 1) % 4 == 0)
+                {
+                    hand = -1;
+                }
+                hand++;
+                
             }
-            Console.WriteLine("\"{0}\" has been saved.", outputFilePath);
+            stopwatch.Stop();
+            Console.WriteLine("\r  {0}\n\"{1}\" has been saved.", stopwatch.Elapsed, outputFilePath);
         }
 
+        /// <summary>
+        /// 引数を処理する
+        /// </summary>
+        /// <param name="args">コマンドライン引数</param>
+        /// <param name="outputFilePath"></param>
+        /// <returns>
+        /// 正常 outptFilePath != "",
+        /// 中断 ret == false
+        /// </returns>
         private static bool AnalyzeArgs(string[] args, ref string outputFilePath)
         {
             string ret = "";
@@ -102,7 +123,9 @@ namespace SimpleLoopbackRecorder
         /// </a>
         /// </summary>
         /// <param name="path">検証するパス</param>
-        /// <returns></returns>
+        /// <returns>
+        /// pathは絶対パスに変換される
+        /// </returns>
         private static bool ValidatePath(ref string path)
         {
             string CurDir = Environment.CurrentDirectory;
