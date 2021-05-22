@@ -439,7 +439,7 @@
     "version": "1.0.0",
     "restore": {
       "projectUniqueName": "C:\\Users\\mukai\\Documents\\SimpleLoopbackRecorder\\SimpleLoopbackRecorder\\SimpleLoopbackRecorder.csproj",
-      "projectName": "SimpleLoopbackRecorder",
+      "projectName": "slr",
       "projectPath": "C:\\Users\\mukai\\Documents\\SimpleLoopbackRecorder\\SimpleLoopbackRecorder\\SimpleLoopbackRecorder.csproj",
       "packagesPath": "C:\\Users\\mukai\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\mukai\\Documents\\SimpleLoopbackRecorder\\SimpleLoopbackRecorder\\obj\\",

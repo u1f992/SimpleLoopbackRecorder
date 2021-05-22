@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("SimpleLoopbackRecorder")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("slr")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("SimpleLoopbackRecorder")]
-[assembly: System.Reflection.AssemblyTitleAttribute("SimpleLoopbackRecorder")]
+[assembly: System.Reflection.AssemblyProductAttribute("slr")]
+[assembly: System.Reflection.AssemblyTitleAttribute("slr")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // MSBuild WriteCodeFragment クラスによって生成されました。
