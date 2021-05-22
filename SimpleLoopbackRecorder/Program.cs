@@ -117,7 +117,7 @@ namespace SimpleLoopbackRecorder
                     }
                     flag_device = true;
                 }
-                else if (((tmp == "-o" || tmp == "--output" || tmp == "-d" || tmp == "--device") || ret == "") && i == args.Length - 1)
+                else if (((tmp == "-o" || tmp == "--output" || tmp == "-d" || tmp == "--device") || ret == "") && args.Length > 1 && i == args.Length - 1)
                 {
                     // 直後に値が必要な引数が最後にある
                     Console.Error.WriteLine("Error: Invalid arguments.");
