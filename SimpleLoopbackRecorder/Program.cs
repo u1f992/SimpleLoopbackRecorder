@@ -31,6 +31,13 @@ namespace SimpleLoopbackRecorder
 
             var capture = new WasapiLoopbackCapture();
             var writer = new WaveFileWriter(outputFilePath, capture.WaveFormat);
+
+            // 何も再生していない時間も録音するため
+            var silence = new SilenceProvider(capture.WaveFormat).ToSampleProvider();
+            var waveout = new WaveOutEvent();
+            waveout.Init(silence);
+            waveout.Play();
+
             var stopwatch = new Stopwatch();
             int hand = 0;
 
@@ -65,6 +72,8 @@ namespace SimpleLoopbackRecorder
                 
             }
             stopwatch.Stop();
+            waveout.Stop();
+
             Console.WriteLine("\r  {0}\n\"{1}\" has been saved.", stopwatch.Elapsed, outputFilePath);
         }
 
